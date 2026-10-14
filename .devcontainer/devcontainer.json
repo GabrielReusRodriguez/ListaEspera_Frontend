@@ -1,0 +1,21 @@
+{
+  "name": "ListaEspera DApp",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "forwardPorts": [3000, 8545],
+  "portsAttributes": {
+    "3000": {
+      "label": "React / Next.js",
+      "onAutoForward": "notify"
+    },
+    "8545": {
+      "label": "Blockchain local (Hardhat / Anvil)",
+      "onAutoForward": "silent"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "remoteUser": "node"
+}
