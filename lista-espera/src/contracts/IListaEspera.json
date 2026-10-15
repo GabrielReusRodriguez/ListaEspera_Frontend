@@ -1,0 +1,393 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"sepolia:11155111": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"gasEstimates": null,
+		"methodIdentifiers": {
+			"aceptaRedireccion(address,uint256)": "d6eae137",
+			"alta(address,string,string,string,uint16,uint256)": "1d6051d4",
+			"baja(address,uint256,uint256,uint16)": "2affacf6",
+			"creaCentro(address,address,string)": "42bdb76c",
+			"creaRedireccion(address,uint256,address)": "73f92bd0",
+			"disable()": "2f2770db",
+			"enable()": "a3907d71",
+			"listaCentros()": "6c3ef3e5",
+			"listaPruebasPorCentro(address)": "ac12cfd6",
+			"listaPruebasPorPaciente(string)": "ca6de264",
+			"listaRedireccionesPendientes(address)": "90d5485f",
+			"obtenerPruebaPorId(uint256)": "1213c51e",
+			"rechazaRedireccion(address,uint256)": "2607ee08"
+		}
+	},
+	"abi": [
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_solicitante",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_idPrueba",
+					"type": "uint256"
+				}
+			],
+			"name": "aceptaRedireccion",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_centroRealizador",
+					"type": "address"
+				},
+				{
+					"internalType": "string",
+					"name": "_idPaciente",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "_codigoPrueba",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "_diagnostico",
+					"type": "string"
+				},
+				{
+					"internalType": "uint16",
+					"name": "_diasDemora",
+					"type": "uint16"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_timestampAlta",
+					"type": "uint256"
+				}
+			],
+			"name": "alta",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_solicitante",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_idPrueba",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_timestampBaja",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint16",
+					"name": "_motivoDeBaja",
+					"type": "uint16"
+				}
+			],
+			"name": "baja",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_centro",
+					"type": "address"
+				},
+				{
+					"internalType": "string",
+					"name": "_nombre",
+					"type": "string"
+				}
+			],
+			"name": "creaCentro",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_solicitante",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_idPrueba",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_centroDestino",
+					"type": "address"
+				}
+			],
+			"name": "creaRedireccion",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "disable",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "enable",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "listaCentros",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "direccion",
+							"type": "address"
+						},
+						{
+							"internalType": "string",
+							"name": "nombre",
+							"type": "string"
+						},
+						{
+							"internalType": "bool",
+							"name": "activo",
+							"type": "bool"
+						}
+					],
+					"internalType": "struct Centro[]",
+					"name": "",
+					"type": "tuple[]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_centro",
+					"type": "address"
+				}
+			],
+			"name": "listaPruebasPorCentro",
+			"outputs": [
+				{
+					"internalType": "uint256[]",
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "_idPaciente",
+					"type": "string"
+				}
+			],
+			"name": "listaPruebasPorPaciente",
+			"outputs": [
+				{
+					"internalType": "uint256[]",
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_solicitante",
+					"type": "address"
+				}
+			],
+			"name": "listaRedireccionesPendientes",
+			"outputs": [
+				{
+					"internalType": "uint256[]",
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_idPrueba",
+					"type": "uint256"
+				}
+			],
+			"name": "obtenerPruebaPorId",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "uint256",
+							"name": "idPrueba",
+							"type": "uint256"
+						},
+						{
+							"internalType": "string",
+							"name": "idPaciente",
+							"type": "string"
+						},
+						{
+							"internalType": "string",
+							"name": "diagnostico",
+							"type": "string"
+						},
+						{
+							"internalType": "string",
+							"name": "codigoPrueba",
+							"type": "string"
+						},
+						{
+							"internalType": "address",
+							"name": "centroRealizador",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "timestampAlta",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "timestampBaja",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint16",
+							"name": "maximoDiasDemora",
+							"type": "uint16"
+						},
+						{
+							"internalType": "bool",
+							"name": "activa",
+							"type": "bool"
+						},
+						{
+							"internalType": "uint16",
+							"name": "motivoDeBaja",
+							"type": "uint16"
+						},
+						{
+							"internalType": "address",
+							"name": "centroDestinoRedireccion",
+							"type": "address"
+						},
+						{
+							"internalType": "bool",
+							"name": "propuestaRedireccion",
+							"type": "bool"
+						}
+					],
+					"internalType": "struct PruebaDiagnostica",
+					"name": "",
+					"type": "tuple"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_solicitante",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_idPrueba",
+					"type": "uint256"
+				}
+			],
+			"name": "rechazaRedireccion",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	]
+}

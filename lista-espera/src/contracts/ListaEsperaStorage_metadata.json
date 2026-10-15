@@ -1,0 +1,591 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_owner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_admin",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_sender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_idPrueba",
+						"type": "uint256"
+					}
+				],
+				"name": "aceptaRedireccion",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_centroRealizador",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_idPaciente",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_diagnostico",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_codigoPrueba",
+						"type": "string"
+					},
+					{
+						"internalType": "uint16",
+						"name": "_maximoDiasDemora",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_timestampAlta",
+						"type": "uint256"
+					}
+				],
+				"name": "altaPruebaDiagnostica",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_centroRealizador",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_idPrueba",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_timestampBaja",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint16",
+						"name": "_motivoDeBaja",
+						"type": "uint16"
+					}
+				],
+				"name": "bajaPruebaDiagnostica",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_sender",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_centro",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_nombre",
+						"type": "string"
+					}
+				],
+				"name": "creaCentro",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "disable",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "enable",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "exportaPruebasDiagnosticas",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "idPrueba",
+								"type": "uint256"
+							},
+							{
+								"internalType": "string",
+								"name": "idPaciente",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "diagnostico",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "codigoPrueba",
+								"type": "string"
+							},
+							{
+								"internalType": "address",
+								"name": "centroRealizador",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "timestampAlta",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "timestampBaja",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint16",
+								"name": "maximoDiasDemora",
+								"type": "uint16"
+							},
+							{
+								"internalType": "bool",
+								"name": "activa",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint16",
+								"name": "motivoDeBaja",
+								"type": "uint16"
+							},
+							{
+								"internalType": "address",
+								"name": "centroDestinoRedireccion",
+								"type": "address"
+							},
+							{
+								"internalType": "bool",
+								"name": "propuestaRedireccion",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct PruebaDiagnostica[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_idPrueba",
+						"type": "uint256"
+					}
+				],
+				"name": "getPrueba",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "idPrueba",
+								"type": "uint256"
+							},
+							{
+								"internalType": "string",
+								"name": "idPaciente",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "diagnostico",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "codigoPrueba",
+								"type": "string"
+							},
+							{
+								"internalType": "address",
+								"name": "centroRealizador",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "timestampAlta",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "timestampBaja",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint16",
+								"name": "maximoDiasDemora",
+								"type": "uint16"
+							},
+							{
+								"internalType": "bool",
+								"name": "activa",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint16",
+								"name": "motivoDeBaja",
+								"type": "uint16"
+							},
+							{
+								"internalType": "address",
+								"name": "centroDestinoRedireccion",
+								"type": "address"
+							},
+							{
+								"internalType": "bool",
+								"name": "propuestaRedireccion",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct PruebaDiagnostica",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "listaCentros",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "direccion",
+								"type": "address"
+							},
+							{
+								"internalType": "string",
+								"name": "nombre",
+								"type": "string"
+							},
+							{
+								"internalType": "bool",
+								"name": "activo",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct Centro[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_centro",
+						"type": "address"
+					}
+				],
+				"name": "listarPruebasPorCentro",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_idPaciente",
+						"type": "string"
+					}
+				],
+				"name": "listarPruebasPorPaciente",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_centro",
+						"type": "address"
+					}
+				],
+				"name": "listarRedireccionesPorCentro",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_sender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_idPrueba",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_centroDestino",
+						"type": "address"
+					}
+				],
+				"name": "nuevaRedireccion",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_sender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_idPrueba",
+						"type": "uint256"
+					}
+				],
+				"name": "rechazaRedireccion",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_admin",
+						"type": "address"
+					}
+				],
+				"name": "setAdmin",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_aseguradora",
+						"type": "address"
+					}
+				],
+				"name": "setAseguradora",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_gestor",
+						"type": "address"
+					}
+				],
+				"name": "setGestorCentros",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_gestor",
+						"type": "address"
+					}
+				],
+				"name": "setGestorPruebasDiagnosticas",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_gestor",
+						"type": "address"
+					}
+				],
+				"name": "setGestorRedirecciones",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_owner",
+						"type": "address"
+					}
+				],
+				"name": "setOwner",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/Storage/ListaEsperaStorage.sol": "ListaEsperaStorage"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/ListaEsperaCommonFunctions.sol": {
+			"keccak256": "0x1b277f71ac232191c06f2ff8de09122dd75d3d55de7a1ed37fcbc7cc38b5e2db",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0989b5e1b751c621f578ce526f8c2aa1d25198adde6b8576188d5b32849a8872",
+				"dweb:/ipfs/QmPcmWpZxjTmD1jkpXcBTiCJXYCCW9ERBXZapjY4E7ggvd"
+			]
+		},
+		"contracts/ListaEsperaTypes.sol": {
+			"keccak256": "0x8239cffe350022e8cae5ef92288d766493bab12f0378684a63082c29398adf82",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fb6704dcbb4497ceb83059221e2ca39ad40737e32e195d6707b5c60b1480c778",
+				"dweb:/ipfs/QmVQY25qiDwUSwgAPRBnrdH1L2SrZ9DUvSiVUCxcnLt6ph"
+			]
+		},
+		"contracts/Storage/ListaEsperaStorage.sol": {
+			"keccak256": "0x7646138956167510efa4a9dbfe5aac25c6fbb2b79834a2a880c84929329fd8b6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://14da8f2d1fd075634c2b4af9ecfccfbfc439853ef76111c81912eb1255321517",
+				"dweb:/ipfs/QmYyjwgMAtan3iaRM3Q1BSwGg14AUVCgcEcg7BUDKiXc7g"
+			]
+		},
+		"contracts/Storage/ListaEsperaStorageCentros.sol": {
+			"keccak256": "0x709c6ed3950c0d0c156a7c68b844650c68ada3d36170e1f00fe7d99fd381f0d5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ab7628b1853c29a801b62c9027615544a018126b58b8375ae2406cf91555d528",
+				"dweb:/ipfs/QmagZb8wSriYP7b4MftKRzgFj13gStJNo4Y9kD5MN5PXso"
+			]
+		},
+		"contracts/Storage/ListaEsperaStoragePruebasDiagnosticas.sol": {
+			"keccak256": "0xd37e8ec3d4001c7db246e0ef16f0e86d0abcaded72807769c6a9dba7b236ed3a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://cf8e851b5ba3762b072876f1852e379e9d64bb00a120cb23f075f18a3aa8dcfa",
+				"dweb:/ipfs/QmeBNUiueUZFQWW6jP9uUxTVVAHzh1WtCfAtpKX8FGscCn"
+			]
+		},
+		"contracts/Storage/ListaEsperaStorageRedirecciones.sol": {
+			"keccak256": "0xf3a06430a9c9478224795e25fd7f4b123793e20e11ce3e0468cbc397f4673ddb",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://915f58a2085dba3e48dbec15b0e4eb3c6562504d5f2ff585755701d4a5ae0350",
+				"dweb:/ipfs/QmVmrQtJm7q1efcT5PnwWx7P4YR6vm9ndssYNaxuiKuJww"
+			]
+		}
+	},
+	"version": 1
+}

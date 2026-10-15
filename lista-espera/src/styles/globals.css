@@ -40,3 +40,78 @@ a {
     color-scheme: dark;
   }
 }
+
+/*
+
+Estilos incluidos por Gabriel, fuera del estandard de Next.js
+
+*/
+/*
+.nav-link {
+  display: inline-block;
+  margin: 0.5rem 0;
+  padding: 0.6rem 1rem;
+  color: #fff;
+  background: #2563eb;
+  border-radius: 6px;
+  text-decoration: none;
+}
+.nav-link:hover {
+  background: #1d4ed8;
+}
+*/
+/*
+.nav-link {
+  color: #0000ee;
+  text-decoration: underline;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+.nav-link:visited {
+  color: #551a8b;
+}
+.nav-link:hover {
+  color: #0000ee;
+  background: none;
+}
+*/
+
+/* Estilos para los enlaces de la navegación */
+.nav-link {
+  display: inline-block;
+  margin: 0.4rem 0;
+  color: #7dd3fc;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.nav-link:visited {
+  color: #c4b5fd;
+}
+.nav-link:hover {
+  color: #bae6fd;
+  border-bottom-color: #bae6fd;
+  background: none;
+}
+
+/* Estilos para el titulo de la pagina*/
+.titulo {
+  text-align: center;
+}
+
+/* Estilos para los botones */
+.boton {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 6px 14px;      /* más pequeño */
+  border-radius: 8px;     /* más redondeado */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;        /* un poco más pequeño */
+  margin: 4px 2px;
+  margin-left: 12px;
+  cursor: pointer;
+}

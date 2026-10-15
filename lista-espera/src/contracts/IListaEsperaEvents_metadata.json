@@ -1,0 +1,201 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "pruebaID",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "CIP",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "centroDestino",
+						"type": "address"
+					}
+				],
+				"name": "AceptaRedireccion",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "pruebaID",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "CIP",
+						"type": "string"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "centroRealizador",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "timestampAlta",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "diagnostico",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "codigoPrueba",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint16",
+						"name": "maximoDiasDemora",
+						"type": "uint16"
+					}
+				],
+				"name": "Alta",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "pruebaID",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "CIP",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "timestampBaja",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint16",
+						"name": "motivo",
+						"type": "uint16"
+					}
+				],
+				"name": "Baja",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "pruebaID",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "CIP",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "centroDestino",
+						"type": "address"
+					}
+				],
+				"name": "CreaRedireccion",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "pruebaID",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "CIP",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "centroDestino",
+						"type": "address"
+					}
+				],
+				"name": "RechazaRedireccion",
+				"type": "event"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/IListaEsperaEvents.sol": "IListaEsperaEvents"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/IListaEsperaEvents.sol": {
+			"keccak256": "0xbd0810233154caf26646c39dd5efe3f3f9bec4dd8f450f4961798e813646392b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://accc08fbcd206394e67f21f62bae48eb0744722e440ef1afbb4e54b5e5d8047a",
+				"dweb:/ipfs/QmeSQrpVdGUq7eBk6UuwYfZj1VaFU4SA4twFoRh3tgbKd4"
+			]
+		}
+	},
+	"version": 1
+}

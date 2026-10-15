@@ -1,0 +1,217 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_owner",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_centroAddress",
+						"type": "address"
+					}
+				],
+				"name": "activaCentro",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_centroAddress",
+						"type": "address"
+					}
+				],
+				"name": "desactivaCentro",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "disable",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "enable",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_centroAddress",
+						"type": "address"
+					}
+				],
+				"name": "esCentroActivo",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_centro",
+						"type": "address"
+					}
+				],
+				"name": "existeCentro",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCentros",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "direccion",
+								"type": "address"
+							},
+							{
+								"internalType": "string",
+								"name": "nombre",
+								"type": "string"
+							},
+							{
+								"internalType": "bool",
+								"name": "activo",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct Centro[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_centroAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_nuevoNombre",
+						"type": "string"
+					}
+				],
+				"name": "modificaCentro",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_nuevoCentroAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_nuevoCentroNombre",
+						"type": "string"
+					}
+				],
+				"name": "nuevoCentro",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/Storage/ListaEsperaStorageCentros.sol": "ListaEsperaStorageCentros"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/ListaEsperaCommonFunctions.sol": {
+			"keccak256": "0x1b277f71ac232191c06f2ff8de09122dd75d3d55de7a1ed37fcbc7cc38b5e2db",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0989b5e1b751c621f578ce526f8c2aa1d25198adde6b8576188d5b32849a8872",
+				"dweb:/ipfs/QmPcmWpZxjTmD1jkpXcBTiCJXYCCW9ERBXZapjY4E7ggvd"
+			]
+		},
+		"contracts/ListaEsperaTypes.sol": {
+			"keccak256": "0x8239cffe350022e8cae5ef92288d766493bab12f0378684a63082c29398adf82",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fb6704dcbb4497ceb83059221e2ca39ad40737e32e195d6707b5c60b1480c778",
+				"dweb:/ipfs/QmVQY25qiDwUSwgAPRBnrdH1L2SrZ9DUvSiVUCxcnLt6ph"
+			]
+		},
+		"contracts/Storage/ListaEsperaStorageCentros.sol": {
+			"keccak256": "0x709c6ed3950c0d0c156a7c68b844650c68ada3d36170e1f00fe7d99fd381f0d5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ab7628b1853c29a801b62c9027615544a018126b58b8375ae2406cf91555d528",
+				"dweb:/ipfs/QmagZb8wSriYP7b4MftKRzgFj13gStJNo4Y9kD5MN5PXso"
+			]
+		}
+	},
+	"version": 1
+}
