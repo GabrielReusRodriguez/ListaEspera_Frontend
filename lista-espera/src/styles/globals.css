@@ -95,6 +95,25 @@ Estilos incluidos por Gabriel, fuera del estandard de Next.js
   background: none;
 }
 
+/* Aviso / disclaimer en la portada */
+.disclaimer {
+  max-width: 52rem;
+  margin: 1.25rem auto 1.75rem;
+  padding: 1rem 1.25rem;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid #fb7185;
+  border-left-width: 4px;
+  border-radius: 8px;
+  color: #fecdd3;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.disclaimer strong {
+  color: #fda4af;
+  font-weight: 700;
+}
+
 /* Estilos para el titulo de la pagina*/
 .titulo {
   text-align: center;
@@ -171,4 +190,49 @@ Estilos incluidos por Gabriel, fuera del estandard de Next.js
   width: 100%;
   padding: 0.35rem 0.5rem;
   font-size: 14px;
+}
+
+/* Estilos para el overlay modal */
+/*
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-contenido {
+  background: white;
+  padding: 1.5rem;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow: auto;
+}
+*/
+
+/* Estilos para el overlay modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-contenido {
+  background: white;
+  color: #171717;
+  padding: 1.5rem;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow: auto;
+}
+/* Hace que el boton de cerrar quede centrado a la derecha del modal*/
+.modal-cerrar {
+  display: flex;
+  justify-content: flex-end;
 }

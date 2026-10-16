@@ -27,56 +27,152 @@ export default function Pacientes() {
   const [Alta_Diagnostico, setAlta_Diagnostico] = useState("");
   const [Alta_Prioridad, setAlta_Prioridad] = useState("");
   const [Alta_CentroRealizador, setAlta_CentroRealizador] = useState("");
-
-
-    //Pintaremos la lista de centros en el estado por eso ha de ser un useState
-    const [centros, setCentros] = useState([]);
-
-    const listarCentros = async () => {
-        try{
-          const result = await contract.current.listaCentros();
-          // Convertimos el Result de ethers a un array plano para React
-          //RECUERDA: ... es el operador spread ( expansion ) copia los elementos de result en un nuevo array.
-          setCentros([...result]);
-          console.log("Centros:", result);
+  // Pintaremos la lista de centros en el estado por eso ha de ser un useState
+  const [centros, setCentros] = useState([]);
   
-        } catch (error) {
-          const decodedError = decodeError(error);
-          alert("Error getting centros:" + decodedError.error);
-        }
+  // Lista de pruebas de cada CIP·
+//  const listaPruebas = useRef([]);
+
+ 
+  // Lista de PruebaDiagnostica (misma forma que el struct de Solidity) para pintar y refrescar
+  const [listaPruebas, setListaPruebas] = useState([]);
+
+  // Prueba seleccionada para mostrar en el modal (pop up)
+  const [pruebaSeleccionada, setPruebaSeleccionada] = useState(null);
+
+  // Flag: true solo tras una búsqueda correcta (si es false, no mostramos resultados ni el mensaje vacío)
+  const [busquedaValida, setBusquedaValida] = useState(false);
+
+  // ethers devuelve BigNumber en uint*; lo normalizamos a tipos JS planos para React
+  //Funcion para mapear la struct de Solidity a un objeto JS plano para React
+  const mapearPrueba = (prueba) => ({
+    idPrueba: prueba.idPrueba.toNumber(),
+    idPaciente: prueba.idPaciente,
+    diagnostico: prueba.diagnostico,
+    codigoPrueba: prueba.codigoPrueba,
+    centroRealizador: prueba.centroRealizador,
+    timestampAlta: prueba.timestampAlta.toNumber(),
+    timestampBaja: prueba.timestampBaja.toNumber(),
+    maximoDiasDemora: Number(prueba.maximoDiasDemora),
+    activa: prueba.activa,
+    motivoDeBaja: Number(prueba.motivoDeBaja),
+    centroDestinoRedireccion: prueba.centroDestinoRedireccion,
+    propuestaRedireccion: prueba.propuestaRedireccion,
+  });
+
+  const nombreCentro = (address) => {
+    if (!address || address === ethers.constants.AddressZero) return "—";
+    const centro = centros.find(
+      (c) => c.direccion.toLowerCase() === address.toLowerCase()
+    );
+    return centro ? centro.nombre : address;
+  };
+
+  const listarCentros = async () => {
+    try {
+      const result = await contract.current.listaCentros();
+      // Convertimos el Result de ethers a un array plano para React
+      // RECUERDA: ... es el operador spread (expansion) copia los elementos de result en un nuevo array.
+      setCentros([...result]);
+      console.log("Centros:", result);
+    } catch (error) {
+      const decodedError = decodeError(error);
+      alert("Error getting centros:" + decodedError.error);
+    }
+  };
+
+  const buscarPruebasPorPaciente = async () => {
+    // Busco los ids de pruebas de ese paciente.
+    const listaIdsPruebas = [];
+    try {
+      if (CIPBusqueda == "") {
+        alert("El campo CIP es obligatorio");
+        setBusquedaValida(false);
+        setListaPruebas([]);
+        return;
       }
 
-
-
-
-  const buscarPruebasPorPaciente = async ()=>{
-    try{
       const CIP = hashea(CIPBusqueda);
-
       const pruebasPaciente = await contract.current.listaPruebasPorPaciente(CIP);
-      //await tx.wait();
       console.log("Pruebas de paciente encontradas:", pruebasPaciente);
+      for (const id of pruebasPaciente) {
+        listaIdsPruebas.push(id.toNumber());
+      }
     } catch (error) {
       const decodedError = decodeError(error);
       alert("Error buscando pruebas de paciente:" + decodedError.error);
+      setBusquedaValida(false);
+      setListaPruebas([]);
+      return;
     }
+    // Para cada id, consulto la struct completa y la guardo en estado
+    const listaPruebasConsultadas = [];
+    for (const idPrueba of listaIdsPruebas) {
+      try {
+        const prueba = await contract.current.obtenerPruebaPorId(idPrueba);
+        console.log("Prueba encontrada:", prueba);
+        listaPruebasConsultadas.push(mapearPrueba(prueba));
+      } catch (error) {
+        const decodedError = decodeError(error);
+        alert("Error consultando datos de prueba:" + decodedError.error);
+      }
+    }
+    //Consideramos que la busqueda es valida.
+    setBusquedaValida(true);
+    setListaPruebas(listaPruebasConsultadas);
+  };
+
+
+  const checkAltaData = () => {
+    if (Alta_CIP == "") {
+      alert("El campo CIP es obligatorio");
+      return false;
+    }
+    if (Alta_Prueba == "0") {
+      alert("El campo prueba es obligatorio");
+      return false;
+    }
+    if (Alta_Diagnostico == "0") {
+      alert("El campo diagnostico es obligatorio");
+      return false;
+    }
+    if (Alta_Prioridad == "0") {
+      alert("El campo prioridad es obligatorio");
+      return false;
+    }
+    if (Alta_CentroRealizador == "0") {
+      alert("El campo centro realizador es obligatorio");
+      return false;
+    }
+    return true;
+  };
+
+  const resetAltaData = () => {
+    setAlta_CIP("");
+    setAlta_Prueba("0");
+    setAlta_Diagnostico("0");
+    setAlta_Prioridad("0");
+    setAlta_CentroRealizador("0");
   };
 
   const altarPrueba = async () =>{
     try{
-      const CIP = hashea(CIPBusqueda);
-      /*
+      if (!checkAltaData()) {
+        return;
+      }
+      const CIP = hashea(Alta_CIP);
       const tx = await contract.current.alta(
         CIP, 
         Alta_Prueba, 
         Alta_Diagnostico, 
         Alta_Prioridad, 
-        Alta_CentroRealizador);
+        hoy());
       await tx.wait();
-      console.log("Prueba altaada correctamente:", tx);
-      */
-     console.log("Prueba altaada correctamente: " + CIP + " " + Alta_Prueba + " " + Alta_Diagnostico + " " + Alta_Prioridad + " " + Alta_CentroRealizador);
+      
+      //console.log("Prueba altaada correctamente:", tx);
+      console.log("Prueba altaada correctamente: " + CIP + " " + literalPrueba(Alta_Prueba) + " " + literalDiagnosticos(Alta_Diagnostico) + " " + literalPrioridad(Alta_Prioridad) + " " + Alta_CentroRealizador);
       alert("Prueba altaada correctamente: " + CIP + " " + Alta_Prueba + " " + Alta_Diagnostico + " " + Alta_Prioridad + " " + Alta_CentroRealizador);
+      resetAltaData();
     } catch (error) {
       const decodedError = decodeError(error);
       alert("Error alta de prueba:" + decodedError.error);
@@ -139,7 +235,7 @@ export default function Pacientes() {
               <br/>
               <div className="formulario-campos">
                 <div className="campo-formulario">
-                  <label htmlFor="altaCIP">idPaciente:</label>
+                  <label htmlFor="altaCIP">CIP:</label>
                   <input id="altaCIP" type="text" value={Alta_CIP} onChange={(e) =>setAlta_CIP(e.target.value)} />
                 </div>
                 <div className="campo-formulario">
@@ -192,61 +288,134 @@ export default function Pacientes() {
               <h2>Busca paciente por CIP</h2>
               Cip : <input type="text" value={CIPBusqueda} onChange={(e) =>setCIPBusqueda(e.target.value)} />
               <button className="boton" onClick={() => {
-                    alert("CIP: " + CIPBusqueda);
+                    buscarPruebasPorPaciente()
               }}>Buscar Paciente</button>
             </div>
+
             <div>
-              <div>
-              <h3>Paciente encontrado  ___CIP__</h3>
-              <p>idPrueba: ___idPrueba__</p>
-              <p>prueba: ___prueba__</p>
-              <p>diagnostico: ___diagnostico__</p>
-              <p>prioridad: ___prioridad__</p>
-              <p>centro realizador: ___centro realizador__</p>
-              <p>fecha de alta: ___fecha de alta__</p>
-              <p>fecha de baja: ___fecha de baja__</p>
-              <p>motivo de baja: ___motivo de baja__</p>
-              <p>Se ha solicitado redireccion al centor: </p>
-              </div>
-              <br/>
-              <div><h3>Historico de cambios</h3>
-                <ul>
-                  <li>Alta de paciente - 22/02/1982 a las 14:50</li>
-                  <li>Redireccion a centro - 22/02/1982 a las 14:51</li>
-                  <li>Baja de la lista  - 22/02/1982 a las 14:51 - Motivo: se realiza la operacion</li>
-                </ul>
-              </div>
-              <br/>
-              <div>
-                <h3>Acciones</h3>
-                <br/>
-                <div>
-                  Dar de baja<br/>
-                  Motivo: <select id="motivoBaja" value={motivoBaja} onChange={(e) => setMotivoBaja(e.target.value)}>
-                   <option value="0">Selecciona un motivo de baja</option>
-                    {
-                      opcionesMotivosBaja().map((motivo) => (
-                        <option value={motivo.value} key={motivo.value}>{motivo.label}</option>
-                      ))
-                    }
-                  </select>
-                  <button className="boton" onClick={() => { darDeBaja();}}>Dar de Baja paciente</button>
-                </div>
-                <br/><br/>
-                <div>Redireccionar a centro__<br/>
-                Nuevo centro destino: <select id="centroDestino" value={centroDestino} onChange={(e) => setCentroDestino(e.target.value)}>
-                      <option value="0">Selecciona un centro destino</option>
-                      {
-                        //Filtramos los centros y dejamos SOLO los que constan como activos.
-                        centros.filter((centro) => centro.activo).map((centro) => (
-                        <option value={centro.direccion} key={centro.direccion}>{centro.nombre}</option>
-                      ))}
-                  </select>
-                  <button className="boton" onClick={() => {redireccionar();}}>Redireccionar a centro</button>
-                </div>
-              </div>
+                
+                {
+                // Si no se ha hecho una busqueda correcta, no mostramos nada.
+                //En caso que se haya hecho... miramos la longitud de la lista de pruebas.
+                //Usamos un fragment <> para no añadir un div extra.
+                !busquedaValida ? null : listaPruebas.length === 0 ? (
+                  <p>No hay pruebas para este CIP.</p>
+                ) : (
+                  <>  
+                  <h3>Pruebas del paciente</h3>
+                  <table className="tabla-centros">
+                    <thead>
+                      <tr>
+                        <th>Prueba</th>
+                        <th>Diagnóstico</th>
+                        <th>Prioridad</th>
+                        <th>Centro realizador</th>
+                        <th>Fecha de alta</th>
+                        <th>Fecha de baja</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[...listaPruebas]
+                        .sort((a, b) => a.timestampAlta - b.timestampAlta)
+                        .map((prueba) => (
+                          <tr key={prueba.idPrueba}>
+                            <td>{literalPrueba(prueba.codigoPrueba)}</td>
+                            <td>{literalDiagnosticos(prueba.diagnostico)}</td>
+                            <td>{literalPrioridad(prueba.maximoDiasDemora)}</td>
+                            <td>{nombreCentro(prueba.centroRealizador)}</td>
+                            <td>{literalFecha(prueba.timestampAlta)}</td>
+                            <td>
+                              {prueba.timestampBaja
+                                ? literalFecha(prueba.timestampBaja)
+                                : "—"}
+                            </td>
+                            <td><button className="boton" onClick={() =>{setPruebaSeleccionada(prueba)}}>Consultar</button></td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                  </>
+                )}
             </div>
 
+            {
+              // Para la gestion de cada prueba usamos un overlay modal para mostrar los datos de la prueba
+              pruebaSeleccionada && (
+              <div
+                className="modal-overlay"
+                onClick={() => setPruebaSeleccionada(null)}  // clic fuera → cierra
+              >
+                <div
+                  className="modal-contenido"
+                  onClick={(e) => e.stopPropagation()}       // clic dentro → no cierra
+                >
+                  <div className="modal-cerrar">
+                    <button
+                      type="button"
+                      className="boton"
+                      onClick={() => setPruebaSeleccionada(null)}
+                    >
+                      Cerrar
+                    </button>
+                  </div>
+                  {/* Aquí mueves el bloque que ya tienes abajo:
+                      datos de la prueba + histórico + baja + redirección */}
+                  <h3>Detalle de la prueba</h3>
+                  <p>idPrueba: {pruebaSeleccionada.idPrueba}</p>
+                  <p>CIP: {CIPBusqueda}</p>
+                  <p>Prueba: {literalPrueba(pruebaSeleccionada.codigoPrueba)}</p>
+                  <p>Diagnostico: {literalDiagnosticos(pruebaSeleccionada.diagnostico)}</p>
+                  <p>Prioridad: {literalPrioridad(pruebaSeleccionada.maximoDiasDemora)}</p>
+                  <p>Centro realizador: {nombreCentro(pruebaSeleccionada.centroRealizador)}</p>
+                  <p>Fecha de alta: {literalFecha(pruebaSeleccionada.timestampAlta)}</p>
+                  {
+                    //Bloque de las bajas
+                    pruebaSeleccionada.timestampBaja != 0 && (
+                      <>
+                        <p>Fecha de baja: {literalFecha(pruebaSeleccionada.timestampBaja)}</p>
+                        <p>Motivo de baja: {literalMotivosBaja(pruebaSeleccionada.motivoDeBaja)}</p>
+                      </>
+                    )
+                  }
+                  {
+                    //Bloque de la redireccion
+                    pruebaSeleccionada.propuestaRedireccion && (
+                      <>
+                        <p>Propuesta de redireccion al centro: {nombreCentro(pruebaSeleccionada.propuestaRedireccion)}</p>
+                      </>
+                    )
+                  }
+                  <br/>
+                  <div>
+                    <h3>Dar de baja</h3>
+                    <p>Motivo de baja: <select id="motivoBaja" value={motivoBaja} onChange={(e) => setMotivoBaja(e.target.value)}>
+                      <option value="0">Selecciona un motivo de baja</option>
+                      {
+                        opcionesMotivosBaja().map((motivo) => (
+                          <option value={motivo.value} key={motivo.value}>{motivo.label}</option>
+                        ))
+                      }
+                    </select>
+                    <button className="boton" onClick={darDeBaja()}>Dar de baja</button>
+                    </p>
+                  </div>
+                  <div>
+                    <h3>Redireccionar</h3>
+                    <p>Centro destino: <select id="centroDestino" value={centroDestino} onChange={(e) => setCentroDestino(e.target.value)}>
+                      <option value="0">Selecciona un centro destino</option>
+                      {
+                        centros.filter((centro) => centro.activo).map((centro) => (
+                          <option value={centro.direccion} key={centro.direccion}>{centro.nombre}</option>
+                        ))
+                      }
+                    </select>
+                    <button className="boton" onClick={redireccionar()}>Redireccionar</button>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
       </div>
     </main>
   );

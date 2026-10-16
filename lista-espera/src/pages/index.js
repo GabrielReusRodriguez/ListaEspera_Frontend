@@ -36,17 +36,18 @@ export default function App() {
 
     <main>
       <h1 className="titulo">Lista de espera</h1>
-      <div>
-        DISCLAIMER: Esto es una prueba de concepto para la gestión de la lista de espera de pacientes en un centro de salud. No es una aplicación oficial y no debe ser usada para fines comerciales.<br/>
-        NINGUN DATO MÉDICO NI PERSONAL DE SALUD DEBERÁ SER ALMACENADO EN ESTA APLICACIÓN. Se ha de usar datos exclusivamente inventados para la prueba de concepto.
-      </div><br/>
+      <aside className="disclaimer" role="note">
+        <strong>DISCLAIMER:</strong> Esto es una prueba de concepto para la gestión de la lista de espera de pacientes en un centro de salud. No es una aplicación oficial y no debe ser usada para fines comerciales.
+        <br />
+        <strong>NINGÚN DATO MÉDICO NI PERSONAL DE SALUD DEBERÁ SER ALMACENADO EN ESTA APLICACIÓN.</strong> Se ha de usar datos exclusivamente inventados para la prueba de concepto.
+      </aside>
       <div>
         <Link href="/centros" className="nav-link">Gestion de Centros</Link><br />
         <Link href="/pacientes" className="nav-link">Gestion de Pacientes</Link> <br />
         <Link href="/redirecciones" className="nav-link">Gestion de Redirecciones recibidas</Link><br />
       </div>
       <br/>
-      <footer>Autor: Gabriel Reus Rodriguez</footer>
+      <footer>Autor: Gabriel Reus Rodriguez (uo316719) para el proyecto final de la Microcredencial Universitaria: Tecnologías Blockchain, Contratos Inteligentes, Aplicaciones Descentralizadas y la Web 3.0 (MICROCREDENCIAL) de la Universidad de Oviedo </footer>
     </main>
     
   );
