@@ -4,27 +4,86 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import { ethers, Contract } from "ethers";
 import { decodeError } from "@ubiquity-os/ethers-decode-error";
 
+import  ListaEsperaManifest from "../contracts/ListaEspera.json";
+
+import { opcionesPrueba, literalPrueba } from "../utils/pruebasDiagnosticas";
+import { opcionesPrioridades, literalPrioridad } from "../utils/prioridades";
+import { opcionesDiagnosticos, literalDiagnosticos } from "../utils/diagnosticos";
+import { hoy, literalFecha } from "../utils/tiempo";
+import { hashea } from "../utils/crypto";
+import { opcionesMotivosBaja, literalMotivosBaja } from "../utils/motivosBaja";
 
 export default function Pacientes() {
 
-  /*
-  <input type="text" value={addressTo} onChange={(e) => setAddressTo(e.target.value)} />
-  */
+  const contractAddress = "0x9Ed20A9432F1b4E80AAD77C2e0cd64DE7007293e";
 
-/*
-//Ejemplo apuntes
-    const myContractApplication = useRef(null);
-    const myContractToken = useRef(null);
 
-  useEffect(() => {
-    let init = async () => {
-       await configurarBlockchain();
+  const contract = useRef(null);
+  const [CIPBusqueda, setCIPBusqueda] = useState("");
+  const [motivoBaja, setMotivoBaja] = useState("");
+  const [centroDestino, setCentroDestino] = useState("");
+  const [Alta_CIP, setAlta_CIP] = useState("");
+  const [Alta_Prueba, setAlta_Prueba] = useState(""); 
+  const [Alta_Diagnostico, setAlta_Diagnostico] = useState("");
+  const [Alta_Prioridad, setAlta_Prioridad] = useState("");
+  const [Alta_CentroRealizador, setAlta_CentroRealizador] = useState("");
+
+
+    //Pintaremos la lista de centros en el estado por eso ha de ser un useState
+    const [centros, setCentros] = useState([]);
+
+    const listarCentros = async () => {
+        try{
+          const result = await contract.current.listaCentros();
+          // Convertimos el Result de ethers a un array plano para React
+          //RECUERDA: ... es el operador spread ( expansion ) copia los elementos de result en un nuevo array.
+          setCentros([...result]);
+          console.log("Centros:", result);
+  
+        } catch (error) {
+          const decodedError = decodeError(error);
+          alert("Error getting centros:" + decodedError.error);
+        }
+      }
+
+
+
+
+  const buscarPruebasPorPaciente = async ()=>{
+    try{
+      const CIP = hashea(CIPBusqueda);
+
+      const pruebasPaciente = await contract.current.listaPruebasPorPaciente(CIP);
+      //await tx.wait();
+      console.log("Pruebas de paciente encontradas:", pruebasPaciente);
+    } catch (error) {
+      const decodedError = decodeError(error);
+      alert("Error buscando pruebas de paciente:" + decodedError.error);
     }
-    init();
-},[]);
+  };
 
+  const altarPrueba = async () =>{
+    try{
+      const CIP = hashea(CIPBusqueda);
+      /*
+      const tx = await contract.current.alta(
+        CIP, 
+        Alta_Prueba, 
+        Alta_Diagnostico, 
+        Alta_Prioridad, 
+        Alta_CentroRealizador);
+      await tx.wait();
+      console.log("Prueba altaada correctamente:", tx);
+      */
+     console.log("Prueba altaada correctamente: " + CIP + " " + Alta_Prueba + " " + Alta_Diagnostico + " " + Alta_Prioridad + " " + Alta_CentroRealizador);
+      alert("Prueba altaada correctamente: " + CIP + " " + Alta_Prueba + " " + Alta_Diagnostico + " " + Alta_Prioridad + " " + Alta_CentroRealizador);
+    } catch (error) {
+      const decodedError = decodeError(error);
+      alert("Error alta de prueba:" + decodedError.error);
+    }
+  };
 
-const configurarBlockchain = async () => {
+  const configurarBlockchain = async () => {
     const provider = await detectEthereumProvider();
     if (provider) {
         await provider.request({method:"eth_requestAccounts"})
@@ -35,52 +94,100 @@ const configurarBlockchain = async () => {
         console.log("Ethereum provider detected:", provider);
         let providerEthers = new ethers.providers.Web3Provider(provider);
         let signer = providerEthers.getSigner();
-        // Hay que poner la address del contrato voteToken
-        myContractToken.current = new Contract(
-            "0x40b33f5q31dasfasda67b",
-            lotteryTicketManifest.abi,
+        // Hay que poner la address del contrato
+        contract.current = new Contract(
+          contractAddress,
+          ListaEsperaManifest.abi,
             signer
         );
-        console.log("Contract Token loaded:", myContractToken.current);
-
-        // Hay que poner la address del contrato voteToken
-        myContractApplication.current = new Contract(
-            "0x60b33f5q31dasfasda67b",
-            lotetryAppManifest.abi,
-            signer
-        );
-        console.log("Contract Applciation loaded:", myContractApplication.current);
-        
+        console.log("Contract loaded:", contract.current);
 
     } else {
         console.error("No Ethereum provider found. Please install MetaMask or another Ethereum wallet");
     }
-}
-*/
+  };
 
-const [CIPBusqueda, setCIPBusqueda] = useState("");
-const [motivoBaja, setMotivoBaja] = useState("");
-const [centroDestino, setCentroDestino] = useState("");
-const [Alta_CIP, setAlta_CIP] = useState("");
-const [Alta_Prueba, setAlta_Prueba] = useState(""); 
-const [Alta_Diagnostico, setAlta_Diagnostico] = useState("");
-const [Alta_Prioridad, setAlta_Prioridad] = useState("");
-const [Alta_CentroRealizador, setAlta_CentroRealizador] = useState("");
+  const consultarHistorialPrueba = async (idPrueba) => {
+
+  };
+
+  const redireccionar = async () => {
+
+  };
+
+  const darDeBaja = async () => {
+
+  };
+
 
   useEffect(() => {
     let init = async () => {
       await configurarBlockchain();
+      listarCentros();
     }
     init();
   },[]);
-
-  const configurarBlockchain = async () => {};
 
   return (
     <main>
       <h1 className="titulo">Gestión de pacientes</h1>
       <Link href="/" className="nav-link">← Volver al inicio</Link>
       <div>
+        <br/>
+            <div>
+              <h2>Dar de Alta paciente en la lista de espera</h2>
+              <br/>
+              <div className="formulario-campos">
+                <div className="campo-formulario">
+                  <label htmlFor="altaCIP">idPaciente:</label>
+                  <input id="altaCIP" type="text" value={Alta_CIP} onChange={(e) =>setAlta_CIP(e.target.value)} />
+                </div>
+                <div className="campo-formulario">
+                  <label htmlFor="altaPrueba">prueba:</label>
+                  <select id="altaPrueba" value={Alta_Prueba} onChange={(e) => setAlta_Prueba(e.target.value)}>
+                      <option value="0">Selecciona una prueba</option>
+                      {opcionesPrueba().map((prueba) => (
+                        <option value={prueba.value} key={prueba.value}>{prueba.label}</option>
+                      ))}
+                    </select>
+                </div>
+                <div className="campo-formulario">
+                  <label htmlFor="altaDiagnostico">diagnostico:</label>
+                  <select id="altaDiagnostico" value={Alta_Diagnostico} onChange={(e) => setAlta_Diagnostico(e.target.value)}>
+                      <option value="0">Selecciona un diagnostico</option>
+                      {
+                        opcionesDiagnosticos().map((diagnostico) => (
+                          <option value={diagnostico.value} key={diagnostico.value}>{diagnostico.label}</option>
+                        ))
+                      }
+                    </select>
+                </div>
+                <div className="campo-formulario">
+                  <label htmlFor="altaPrioridad">prioridad:</label>
+                  <select id="altaPrioridad" value={Alta_Prioridad} onChange={(e) => setAlta_Prioridad(e.target.value)}>
+                      <option value="0">Selecciona una prioridad</option>
+                      {
+                        opcionesPrioridades().map((prioridad) => (
+                          <option value={prioridad.value} key={prioridad.value}>{prioridad.label}</option>
+                        ))
+                      }
+                    </select>
+                </div>
+                <div className="campo-formulario">
+                  <label htmlFor="altaCentroRealizador">centro realizador:</label>
+                  <select id="altaCentroRealizador" value={Alta_CentroRealizador} onChange={(e) => setAlta_CentroRealizador(e.target.value)}>
+                        <option value="0">Selecciona un centro realizador</option>
+                        {
+                          //Filtramos los centros y dejamos SOLO los que constan como activos.
+                          centros.filter((centro) => centro.activo).map((centro) => (
+                          <option value={centro.direccion} key={centro.direccion}>{centro.nombre}</option>
+                        ))}
+                    </select>
+                </div>
+                <button className="boton" onClick={() => {altarPrueba();}}>Dar de Alta paciente</button>
+              </div>
+            </div>
+            <br/><br/><br/>
             <div>
               <h2>Busca paciente por CIP</h2>
               Cip : <input type="text" value={CIPBusqueda} onChange={(e) =>setCIPBusqueda(e.target.value)} />
@@ -116,66 +223,30 @@ const [Alta_CentroRealizador, setAlta_CentroRealizador] = useState("");
                 <div>
                   Dar de baja<br/>
                   Motivo: <select id="motivoBaja" value={motivoBaja} onChange={(e) => setMotivoBaja(e.target.value)}>
-                    <option value="1">Se realiza la operacion</option>
-                    <option value="2">Exitus</option>
+                   <option value="0">Selecciona un motivo de baja</option>
+                    {
+                      opcionesMotivosBaja().map((motivo) => (
+                        <option value={motivo.value} key={motivo.value}>{motivo.label}</option>
+                      ))
+                    }
                   </select>
-                  <button className="boton" onClick={() => {alert("Dar de Baja");}}>Dar de Baja paciente</button>
+                  <button className="boton" onClick={() => { darDeBaja();}}>Dar de Baja paciente</button>
                 </div>
                 <br/><br/>
                 <div>Redireccionar a centro__<br/>
-                Motivo: <select id="centroDestino" value={centroDestino} onChange={(e) => setCentroDestino(e.target.value)}>
-                    <option value="1">Hospital Dos de Mayo</option>
-                    <option value="2">Hospital de Bellvitge</option>
+                Nuevo centro destino: <select id="centroDestino" value={centroDestino} onChange={(e) => setCentroDestino(e.target.value)}>
+                      <option value="0">Selecciona un centro destino</option>
+                      {
+                        //Filtramos los centros y dejamos SOLO los que constan como activos.
+                        centros.filter((centro) => centro.activo).map((centro) => (
+                        <option value={centro.direccion} key={centro.direccion}>{centro.nombre}</option>
+                      ))}
                   </select>
-                  <button className="boton" onClick={() => {alert("Redireccionar a centro");}}>Redireccionar a centro</button>
+                  <button className="boton" onClick={() => {redireccionar();}}>Redireccionar a centro</button>
                 </div>
               </div>
             </div>
 
-      </div>
-      <br/>
-      <div>
-            <h2>Dar de Alta paciente en la lista de espera</h2>
-            <div>
-              <div>idPaciente: <input type="text" value={Alta_CIP} onChange={(e) =>setAlta_CIP(e.target.value)} /></div>
-              <div>prueba: <select id="altaPrueba" value={Alta_Prueba} onChange={(e) => setAlta_Prueba(e.target.value)}>
-                    <option value="1">RM de brazo</option>
-                    <option value="2">RM de torax</option>
-                    <option value="3">RM de pelvis</option>
-                    <option value="4">RM de abdomen</option>
-                    <option value="5">RM de musculos</option>
-                    <option value="6">RM de articulaciones</option>
-                    <option value="7">RM de columna</option>
-                    <option value="8">RM de espina</option>
-                    <option value="9">RM de nervios</option>
-                    <option value="10">RM de vasos</option>
-                    <option value="11">RM de glandulas</option>
-                    <option value="12">RM de tejidos blandos</option>
-                    <option value="13">RM de huesos</option>
-                    <option value="14">RM de cartilago</option>
-                    <option value="15">RM de ligamentos</option>
-                    <option value="16">RM de discos</option>
-                  </select>
-              </div>
-              <div>diagnostico: <select id="altaDiagnostico" value={Alta_Diagnostico} onChange={(e) => setAlta_Diagnostico(e.target.value)}>
-                    <option value="S93.401">Esguince de tobillo derecho</option>
-                    <option value="S93.402">Esguince de tobillo izquierdo</option>
-                    <option value="J18.9">Neumonia</option>
-                    <option value="U07.1">COVID-19</option>
-                    <option value="K46.9">Hernia inguinal</option>
-                  </select>
-              </div>
-              <div>prioridad: <select id="altaPrioridad" value={Alta_Prioridad} onChange={(e) => setAlta_Prioridad(e.target.value)}>
-                    <option value="30">Urgente</option>
-                    <option value="90">Preferente</option>
-                  </select>
-              </div>
-              <div>centro realizador: <select id="altaCentroRealizador" value={Alta_CentroRealizador} onChange={(e) => setAlta_CentroRealizador(e.target.value)}>
-                    <option value="1">Hospital Dos de Mayo</option>
-                    <option value="2">Hospital de Bellvitge</option>
-                  </select></div>
-              <button className="boton" onClick={() => {alert("Dar de Alta paciente");}}>Dar de Alta paciente</button>
-            </div>
       </div>
     </main>
   );

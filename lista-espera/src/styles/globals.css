@@ -115,3 +115,60 @@ Estilos incluidos por Gabriel, fuera del estandard de Next.js
   margin-left: 12px;
   cursor: pointer;
 }
+
+/* Tabla de centros */
+.tabla-centros {
+  width: 100%;
+  max-width: 900px;
+  margin: 1rem 0;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabla-centros th,
+.tabla-centros td {
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+.tabla-centros th {
+  border-bottom: 2px solid #4CAF50;
+  font-weight: 600;
+}
+
+.tabla-centros tbody tr:hover {
+  background: rgba(76, 175, 80, 0.08);
+}
+
+.tabla-centros .celda-address {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+/* Formulario: etiquetas y controles alineados */
+.formulario-campos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 520px;
+}
+
+.campo-formulario {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.campo-formulario label {
+  text-align: right;
+}
+
+.campo-formulario input,
+.campo-formulario select {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  font-size: 14px;
+}
