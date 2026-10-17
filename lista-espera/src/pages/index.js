@@ -37,9 +37,9 @@ export default function App() {
     <main>
       <h1 className="titulo">Lista de espera</h1>
       <aside className="disclaimer" role="note">
-        <strong>DISCLAIMER:</strong> Esto es una prueba de concepto para la gestión de la lista de espera de pacientes en un centro de salud. No es una aplicación oficial y no debe ser usada para fines comerciales.
+        <strong>DISCLAIMER:</strong> Esto es una prueba de concepto para la gestión de la lista de espera de pacientes en un centro de salud. No es una aplicación oficial y no debe ser usada para fines sanitarios.
         <br />
-        <strong>NINGÚN DATO MÉDICO NI PERSONAL DE SALUD DEBERÁ SER ALMACENADO EN ESTA APLICACIÓN.</strong> Se ha de usar datos exclusivamente inventados para la prueba de concepto.
+        <strong>ESTA APLICACION NO CONECTA CON NINGUN REPOSITORIO DE DATOS DE ENTIDADES SANITARIAS.</strong> Todos los datos son inventados para la prueba de concepto.
       </aside>
       <div>
         <Link href="/centros" className="nav-link">Gestion de Centros</Link><br />

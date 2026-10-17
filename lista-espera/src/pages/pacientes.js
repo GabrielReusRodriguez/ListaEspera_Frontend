@@ -29,21 +29,26 @@ export default function Pacientes() {
   const [Alta_CentroRealizador, setAlta_CentroRealizador] = useState("");
   // Pintaremos la lista de centros en el estado por eso ha de ser un useState
   const [centros, setCentros] = useState([]);
-  
-  // Lista de pruebas de cada CIP·
-//  const listaPruebas = useRef([]);
-
- 
+   
   // Lista de PruebaDiagnostica (misma forma que el struct de Solidity) para pintar y refrescar
   const [listaPruebas, setListaPruebas] = useState([]);
 
   // Prueba seleccionada para mostrar en el modal (pop up)
   const [pruebaSeleccionada, setPruebaSeleccionada] = useState(null);
 
+  // Prueba cuyo histórico se muestra en el modal de histórico
+  // Estado para la prueba seleccionada para mostrar en el modal (pop up)
+  const [pruebaHistorial, setPruebaHistorial] = useState(null);
+  // Estado para el historial de la prueba seleccionada
+  const [historial, setHistorial] = useState([]);
+  // Estado para indicar si se está cargando el historial
+  const [cargandoHistorial, setCargandoHistorial] = useState(false);
+
   // Flag: true solo tras una búsqueda correcta (si es false, no mostramos resultados ni el mensaje vacío)
   const [busquedaValida, setBusquedaValida] = useState(false);
 
-  // ethers devuelve BigNumber en uint*; lo normalizamos a tipos JS planos para React
+  /* FUNCIONES AUXILIARES ****************************************************************
+  */
   //Funcion para mapear la struct de Solidity a un objeto JS plano para React
   const mapearPrueba = (prueba) => ({
     idPrueba: prueba.idPrueba.toNumber(),
@@ -60,6 +65,7 @@ export default function Pacientes() {
     propuestaRedireccion: prueba.propuestaRedireccion,
   });
 
+  // Funcion para obtener el nombre de un centro a partir de su address
   const nombreCentro = (address) => {
     if (!address || address === ethers.constants.AddressZero) return "—";
     const centro = centros.find(
@@ -68,6 +74,7 @@ export default function Pacientes() {
     return centro ? centro.nombre : address;
   };
 
+  // Funcion para listar los centros de salud
   const listarCentros = async () => {
     try {
       const result = await contract.current.listaCentros();
@@ -203,8 +210,11 @@ export default function Pacientes() {
     }
   };
 
+  /* FUNCIONES PARA EL MODAL DE HISTORIAL ****************************************************************
+  */
+  // Funcion para cerrar el modal de histórico
   const consultarHistorialPrueba = async (idPrueba) => {
-
+      //Creamos un nuevo array de eventos pero con los datos formateados para visualizarse.
   };
 
   const redireccionar = async () => {
@@ -215,7 +225,8 @@ export default function Pacientes() {
 
   };
 
-
+  /* useEffect para configurar la blockchain y listar los centros ********************************
+  */
   useEffect(() => {
     let init = async () => {
       await configurarBlockchain();
@@ -224,6 +235,8 @@ export default function Pacientes() {
     init();
   },[]);
 
+  /* Renderizado del componente ****************************************************************
+  */
   return (
     <main>
       <h1 className="titulo">Gestión de pacientes</h1>
@@ -330,7 +343,10 @@ export default function Pacientes() {
                                 ? literalFecha(prueba.timestampBaja)
                                 : "—"}
                             </td>
-                            <td><button className="boton" onClick={() =>{setPruebaSeleccionada(prueba)}}>Consultar</button></td>
+                            <td className="celda-acciones">
+                              <button type="button" className="boton" onClick={() => { setPruebaSeleccionada(prueba); }}>Gestionar</button>
+                              <button type="button" className="boton" onClick={() => { setPruebaSeleccionada(prueba); }}>Historico</button>
+                            </td>
                           </tr>
                         ))}
                     </tbody>
@@ -340,7 +356,8 @@ export default function Pacientes() {
             </div>
 
             {
-              // Para la gestion de cada prueba usamos un overlay modal para mostrar los datos de la prueba
+              /* Modal para mostrar los datos de la prueba ****************************************************************
+              */
               pruebaSeleccionada && (
               <div
                 className="modal-overlay"
@@ -416,6 +433,9 @@ export default function Pacientes() {
                 </div>
               </div>
             )}
+
+            {/* Modal para mostrar EL HISTORIAL de la prueba ****************************************************************
+              */}
       </div>
     </main>
   );

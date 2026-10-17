@@ -166,6 +166,18 @@ Estilos incluidos por Gabriel, fuera del estandard de Next.js
   word-break: break-all;
 }
 
+/* Acciones (Gestionar / Historico) en la misma línea */
+.tabla-centros td.celda-acciones {
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.tabla-centros td.celda-acciones .boton {
+  display: inline-block;
+  margin: 0 4px 0 0;
+  vertical-align: middle;
+}
+
 /* Formulario: etiquetas y controles alineados */
 .formulario-campos {
   display: flex;
@@ -230,6 +242,11 @@ Estilos incluidos por Gabriel, fuera del estandard de Next.js
   max-width: 640px;
   max-height: 90vh;
   overflow: auto;
+}
+
+.modal-historial {
+  max-width: 860px;
+  width: 92vw;
 }
 /* Hace que el boton de cerrar quede centrado a la derecha del modal*/
 .modal-cerrar {
