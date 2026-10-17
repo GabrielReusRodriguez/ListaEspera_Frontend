@@ -253,3 +253,31 @@ Estilos incluidos por Gabriel, fuera del estandard de Next.js
   display: flex;
   justify-content: flex-end;
 }
+
+.lista-historial {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.item-historial {
+  border-left: 3px solid #4CAF50;
+  padding: 0.75rem 0 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.item-historial-cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.item-historial p {
+  margin: 0.25rem 0;
+}
+
+.item-historial-meta {
+  font-size: 12px;
+  color: #666;
+}

@@ -19,6 +19,7 @@ export default function Pacientes() {
 
 
   const contract = useRef(null);
+  const contractRead = useRef(null);
   const [CIPBusqueda, setCIPBusqueda] = useState("");
   const [motivoBaja, setMotivoBaja] = useState("");
   const [centroDestino, setCentroDestino] = useState("");
@@ -205,6 +206,20 @@ export default function Pacientes() {
         );
         console.log("Contract loaded:", contract.current);
 
+        //Cargamos el contrato de lectura
+        // 2. NUEVO: Proveedor RPC dedicado (Alchemy/Infura) SOLO para LEER eventos
+        // Esto evita por completo el error -32603 en el queryFilter
+        //https://bnb-mainnet.g.alchemy.com/v2/alch_NrZ2l0TpAOtqtc2JNShmA
+        //https://rpc.ankr.com/bsc_testnet_chapel/1ae99a4e043e9b1c9a8f9ade307676bbd6b08e4097083a791fddb3e640e6240f
+        let readProvider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/bsc_testnet_chapel/1ae99a4e043e9b1c9a8f9ade307676bbd6b08e4097083a791fddb3e640e6240f");
+
+        // 3. Contrato para LEER eventos y datos
+        contractRead.current = new ethers.Contract(
+            contractAddress,
+            ListaEsperaManifest.abi,
+            readProvider
+        );
+
     } else {
         console.error("No Ethereum provider found. Please install MetaMask or another Ethereum wallet");
     }
@@ -212,9 +227,174 @@ export default function Pacientes() {
 
   /* FUNCIONES PARA EL MODAL DE HISTORIAL ****************************************************************
   */
-  // Funcion para cerrar el modal de histórico
-  const consultarHistorialPrueba = async (idPrueba) => {
-      //Creamos un nuevo array de eventos pero con los datos formateados para visualizarse.
+  const cerrarHistorial = () => {
+    setPruebaHistorial(null);
+    setHistorial([]);
+    setCargandoHistorial(false);
+  };
+
+  // Consulta los logs de la blockchain de una prueba y los formatea para el modal
+  const consultarHistorialPrueba = async (prueba) => {
+    // URL de consula manual: https://testnet.bscscan.com
+    setCargandoHistorial(true);
+    setHistorial([]);
+    try {
+      if (!contractRead.current) {
+        alert("Contrato no disponible. Espera a que MetaMask conecte.");
+        setCargandoHistorial(false);
+        return;
+      }
+
+      const provider = contractRead.current.provider;
+      const idPrueba = prueba.idPrueba;
+
+      // El RPC (BSC/MetaMask) no permite barrer ~137M bloques desde 0.
+      // Acotamos desde un poco antes del timestamp de alta de la prueba.
+      const TAMANO_SEGMENTO = 3000;
+      const BLOCK_TIME_SEG = 3; // BSC ~3s/bloque
+      const MARGEN_BLOQUES = 20000;
+      // Espera entre cada queryFilter (ms) para no saturar el RPC
+      const DELAY_ENTRE_QUERIES_MS = 1000;
+      const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      const toBlock = await provider.getBlockNumber();
+      const latestBlock = await provider.getBlock(toBlock);
+      const segundosDesdeAlta = Math.max(
+        0,
+        latestBlock.timestamp - (prueba.timestampAlta || 0)
+      );
+     /*
+      const fromBlock = Math.max(
+        0,
+        toBlock - Math.ceil(segundosDesdeAlta / BLOCK_TIME_SEG) - MARGEN_BLOQUES
+      );
+*/
+      const fromBlock = 137149190;
+      console.log("Histórico bloques:", { fromBlock, toBlock, idPrueba });
+
+      // Todos los eventos tienen pruebaID como 1.er indexed → basta filtrar por ese topic.
+      // topics[0] = null (cualquier firma de evento); topics[1] = pruebaID.
+      const iface = contractRead.current.interface;
+      const topicPruebaId = ethers.utils.hexZeroPad(
+        ethers.BigNumber.from(idPrueba).toHexString(),
+        32
+      );
+
+      const todos = [];
+      let primeraQuery = true;
+      for (let desde = fromBlock; desde <= toBlock; desde += TAMANO_SEGMENTO) {
+        const hasta = Math.min(desde + TAMANO_SEGMENTO - 1, toBlock);
+        if (!primeraQuery) {
+          await esperar(DELAY_ENTRE_QUERIES_MS);
+        }
+        primeraQuery = false;
+
+        const logs = await provider.getLogs({
+          address: contractAddress,
+          fromBlock: desde,
+          toBlock: hasta,
+          topics: [null, topicPruebaId],
+        });
+        console.log("Logs encontrados:", logs);
+        const evs = logs.map((log) => {
+          const parsed = iface.parseLog(log);
+          return {
+            event: parsed.name,
+            args: parsed.args,
+            blockNumber: log.blockNumber,
+            logIndex: log.logIndex,
+            transactionHash: log.transactionHash,
+          };
+        });
+        console.log(
+          "Eventos encontrados:",
+          evs.length,
+          " desde el bloque: ",
+          desde,
+          " hasta el bloque: ",
+          hasta
+        );
+        todos.push(...evs);
+      }
+
+      // Más antiguo → más reciente (blockNumber, y logIndex como desempate)
+      todos.sort((a, b) => {
+        if (a.blockNumber !== b.blockNumber) return a.blockNumber - b.blockNumber;
+        return a.logIndex - b.logIndex;
+      });
+
+      // Timestamps de bloque solo para eventos que no los traen en el log
+      const bloquesCache = {};
+      /* Hacemos un diccionario clave, valor ( numero bloque, fecha formateda) ya que los eventos no llevan la fecha.
+        Los  eventos no llevan la fecha, solo el numero de bloque por lo que hay que pedirla al bloque.
+      */
+      const timestampDeBloque = async (blockNumber) => {
+        if (bloquesCache[blockNumber] != null) return bloquesCache[blockNumber];
+        const block = await contractRead.current.provider.getBlock(blockNumber);
+        bloquesCache[blockNumber] = block.timestamp;
+        return block.timestamp;
+      };
+
+      const eventosFormateados = await Promise.all(
+        todos.map(async (ev) => {
+          const tipo = ev.event;
+          const args = ev.args;
+          let timestamp = null;
+          let detalle = "";
+
+          timestamp = await timestampDeBloque(ev.blockNumber);
+          if (tipo === "Alta") {
+            detalle = [
+              `Fecha de Alta: ${literalFecha(args[3].toNumber())}`,
+              `Centro realizador: ${nombreCentro(args[2])}`,
+            ].join(" · ");
+          } else if (tipo === "Baja") {
+            detalle = `Motivo: ${literalMotivosBaja(Number(args.motivo))}`;
+          } else if (
+            tipo === "CreaRedireccion" ||
+            tipo === "AceptaRedireccion" ||
+            tipo === "RechazaRedireccion"
+          ) {
+            detalle = `Centro destino: ${nombreCentro(args.centroDestino)}`;
+          }
+
+          return {
+            tipo,
+            timestamp,
+            detalle,
+            blockNumber: ev.blockNumber,
+            logIndex: ev.logIndex,
+            txHash: ev.transactionHash,
+          };
+        })
+      );
+
+      setHistorial(eventosFormateados);
+    } catch (error) {
+      const decodedError = decodeError(error);
+      alert("Error consultando histórico:" + decodedError.error);
+      console.log("Error consultando histórico:" + decodedError.error);
+      setHistorial([]);
+    } finally {
+      setCargandoHistorial(false);
+    }
+  };
+
+  const tituloEvento = (tipo) => {
+    switch (tipo) {
+      case "Alta":
+        return "Alta en lista de espera";
+      case "Baja":
+        return "Baja de la prueba";
+      case "CreaRedireccion":
+        return "Propuesta de redirección";
+      case "AceptaRedireccion":
+        return "Redirección aceptada";
+      case "RechazaRedireccion":
+        return "Redirección rechazada";
+      default:
+        return tipo;
+    }
   };
 
   const redireccionar = async () => {
@@ -345,7 +525,16 @@ export default function Pacientes() {
                             </td>
                             <td className="celda-acciones">
                               <button type="button" className="boton" onClick={() => { setPruebaSeleccionada(prueba); }}>Gestionar</button>
-                              <button type="button" className="boton" onClick={() => { setPruebaSeleccionada(prueba); }}>Historico</button>
+                              <button
+                                type="button"
+                                className="boton"
+                                onClick={() => {
+                                  setPruebaHistorial(prueba);
+                                  consultarHistorialPrueba(prueba);
+                                }}
+                              >
+                                Historico
+                              </button>
                             </td>
                           </tr>
                         ))}
@@ -436,6 +625,52 @@ export default function Pacientes() {
 
             {/* Modal para mostrar EL HISTORIAL de la prueba ****************************************************************
               */}
+            {pruebaHistorial && (
+              <div className="modal-overlay" onClick={cerrarHistorial}>
+                <div
+                  className="modal-contenido modal-historial"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="modal-cerrar">
+                    <button type="button" className="boton" onClick={cerrarHistorial}>
+                      Cerrar
+                    </button>
+                  </div>
+                  <h3>Histórico de la prueba</h3>
+                  <p>
+                    {literalPrueba(pruebaHistorial.codigoPrueba)} · {literalDiagnosticos(pruebaHistorial.diagnostico)} · {literalPrioridad(pruebaHistorial.maximoDiasDemora)} · id{" "}
+                    {pruebaHistorial.idPrueba}
+                  </p>
+                  {cargandoHistorial ? (
+                    <p>Cargando eventos de la blockchain…</p>
+                  ) : historial.length === 0 ? (
+                    <p>No hay eventos registrados para esta prueba.</p>
+                  ) : (
+                    <ol className="lista-historial">
+                      {historial.map((evento) => (
+                        <li
+                          key={`${evento.txHash}-${evento.logIndex}`}
+                          className="item-historial"
+                        >
+                          <div className="item-historial-cabecera">
+                            <strong>{tituloEvento(evento.tipo)}</strong>
+                            <span>
+                              {evento.timestamp
+                                ? literalFecha(evento.timestamp)
+                                : "—"}
+                            </span>
+                          </div>
+                          {evento.detalle && <p>{evento.detalle}</p>}
+                          <p className="item-historial-meta">
+                            Bloque {evento.blockNumber}
+                          </p>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </div>
+              </div>
+            )}
       </div>
     </main>
   );
