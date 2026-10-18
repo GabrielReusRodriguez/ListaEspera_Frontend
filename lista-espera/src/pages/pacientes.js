@@ -92,8 +92,8 @@ export default function Pacientes() {
       setCentros([...result]);
       console.log("Centros:", result);
     } catch (error) {
-      const decodedError = decodeError(error);
-      alert("Error getting centros:" + decodedError.error);
+      alert(decodeBlockchainError("Error getting centros ", error));
+      return;
     }
   };
 
@@ -119,8 +119,7 @@ export default function Pacientes() {
         listaIdsPruebas.push(id.toNumber());
       }
     } catch (error) {
-      const decodedError = decodeError(error);
-      alert("Error buscando pruebas de paciente:" + decodedError.error);
+      alert(decodeBlockchainError("Error buscando pruebas de paciente", error));
       setBusquedaValida(false);
       setListaPruebas([]);
       return;
@@ -133,8 +132,8 @@ export default function Pacientes() {
         console.log("Prueba encontrada:", prueba);
         listaPruebasConsultadas.push(mapearPrueba(prueba));
       } catch (error) {
-        const decodedError = decodeError(error);
-        alert("Error consultando datos de prueba:" + decodedError.error);
+        alert(decodeBlockchainError("Error consultando datos de prueba", error));
+        return;
       }
     }
     //Consideramos que la busqueda es valida.
@@ -205,7 +204,8 @@ export default function Pacientes() {
       */
       console.log(decodeBlockchainError("Error alta de prueba", error));
       alert(decodeBlockchainError("Error alta de prueba", error));
-      }
+      return;
+    }
   };
 
   const configurarBlockchain = async () => {
@@ -377,13 +377,15 @@ export default function Pacientes() {
           timestamp = await timestampDeBloque(ev.blockNumber);
           if (tipo === "Alta") {
             detalle = [
-              `Fecha de Alta: ${literalFecha(args[3].toNumber())}`,
               `Centro realizador: ${nombreCentro(args[2])}`,
+              `Fecha de Alta: ${literalFecha(args[3].toNumber())}`
             ].join(" · ");
           } else if (tipo === "Baja") {
             console.log("Baja: " + args + "args[1]: " + args[1]);
             detalle = [
-              `Motivo: ${literalMotivosBaja(args[3])}`].join(" · ");
+              `Motivo: ${literalMotivosBaja(args[3])}, 
+               Fecha de Baja: ${literalFecha(args[2].toNumber())}`
+              ].join(" · ");
           } else if (
             tipo === "CreaRedireccion" ||
             tipo === "AceptaRedireccion" ||
@@ -405,9 +407,8 @@ export default function Pacientes() {
 
       setHistorial(eventosFormateados);
     } catch (error) {
-      const decodedError = decodeError(error);
-      alert("Error consultando histórico:" + decodedError.error);
-      console.log("Error consultando histórico:" + decodedError.error);
+      alert(decodeBlockchainError("Error consultando histórico", error));
+      console.log(decodeBlockchainError("Error consultando histórico", error));
       setHistorial([]);
     } finally {
       setCargandoHistorial(false);
@@ -471,6 +472,7 @@ export default function Pacientes() {
       setPruebaSeleccionada(null);
     } catch (error) {
       alert(decodeBlockchainError("Error al dar de baja a la prueba ", error));
+      return;
     }
 
   };
