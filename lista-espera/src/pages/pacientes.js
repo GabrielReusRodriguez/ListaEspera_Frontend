@@ -12,6 +12,7 @@ import { opcionesDiagnosticos, literalDiagnosticos } from "../utils/diagnosticos
 import { hoy, literalFecha } from "../utils/tiempo";
 import { hashea } from "../utils/crypto";
 import { opcionesMotivosBaja, literalMotivosBaja } from "../utils/motivosBaja";
+import { decodeBlockchainError } from "../utils/blockchainError";
 
 export default function Pacientes() {
 
@@ -21,13 +22,13 @@ export default function Pacientes() {
   const contract = useRef(null);
   const contractRead = useRef(null);
   const [CIPBusqueda, setCIPBusqueda] = useState("");
-  const [motivoBaja, setMotivoBaja] = useState("");
+  const [motivoBaja, setMotivoBaja] = useState("0");
   const [centroDestino, setCentroDestino] = useState("");
   const [Alta_CIP, setAlta_CIP] = useState("");
-  const [Alta_Prueba, setAlta_Prueba] = useState(""); 
-  const [Alta_Diagnostico, setAlta_Diagnostico] = useState("");
-  const [Alta_Prioridad, setAlta_Prioridad] = useState("");
-  const [Alta_CentroRealizador, setAlta_CentroRealizador] = useState("");
+  const [Alta_Prueba, setAlta_Prueba] = useState("0"); 
+  const [Alta_Diagnostico, setAlta_Diagnostico] = useState("0");
+  const [Alta_Prioridad, setAlta_Prioridad] = useState("0");
+  const [Alta_CentroRealizador, setAlta_CentroRealizador] = useState("0");
   // Pintaremos la lista de centros en el estado por eso ha de ser un useState
   const [centros, setCentros] = useState([]);
    
@@ -77,6 +78,10 @@ export default function Pacientes() {
 
   // Funcion para listar los centros de salud
   const listarCentros = async () => {
+    if (!contract.current) {
+      alert("Contrato no disponible. No se ha podido conectar a la blockchain.");
+      return;
+    }
     try {
       const result = await contract.current.listaCentros();
       // Convertimos el Result de ethers a un array plano para React
@@ -90,6 +95,10 @@ export default function Pacientes() {
   };
 
   const buscarPruebasPorPaciente = async () => {
+    if (!contract.current) {
+      alert("Contrato no disponible. No se ha podido conectar a la blockchain.");
+      return;
+    }
     // Busco los ids de pruebas de ese paciente.
     const listaIdsPruebas = [];
     try {
@@ -164,6 +173,10 @@ export default function Pacientes() {
   };
 
   const altarPrueba = async () =>{
+    if (!contract.current) {
+      alert("Contrato no disponible. No se ha podido conectar a la blockchain.");
+      return;
+    }
     try{
       if (!checkAltaData()) {
         return;
@@ -178,13 +191,18 @@ export default function Pacientes() {
       await tx.wait();
       
       //console.log("Prueba altaada correctamente:", tx);
-      console.log("Prueba altaada correctamente: " + CIP + " " + literalPrueba(Alta_Prueba) + " " + literalDiagnosticos(Alta_Diagnostico) + " " + literalPrioridad(Alta_Prioridad) + " " + Alta_CentroRealizador);
-      alert("Prueba altaada correctamente: " + CIP + " " + Alta_Prueba + " " + Alta_Diagnostico + " " + Alta_Prioridad + " " + Alta_CentroRealizador);
+      console.log("Prueba dada de alta correctamente: " + CIP + " " + literalPrueba(Alta_Prueba) + " " + literalDiagnosticos(Alta_Diagnostico) + " " + literalPrioridad(Alta_Prioridad) + " " + Alta_CentroRealizador);
+      alert("Prueba dada de alta correctamente: " + CIP + " " + Alta_Prueba + " " + Alta_Diagnostico + " " + Alta_Prioridad + " " + Alta_CentroRealizador);
       resetAltaData();
     } catch (error) {
+      /*
       const decodedError = decodeError(error);
-      alert("Error alta de prueba:" + decodedError.error);
-    }
+      const errMsg  =  error.data.message ? error.data.message : "Unknown";
+      alert("Error alta de prueba:" + decodedError.error + " " + errMsg);
+      */
+      console.log(decodeBlockchainError("Error alta de prueba", error));
+      alert(decodeBlockchainError("Error alta de prueba", error));
+      }
   };
 
   const configurarBlockchain = async () => {
@@ -398,13 +416,55 @@ export default function Pacientes() {
   };
 
   const redireccionar = async () => {
+    if (!contract.current) {
+      alert("Contrato no disponible. No se ha podido conectar a la blockchain.");
+      return;
+    }
+  };
+
+  const darDeBaja = async (idPrueba) => {
+    if (!contract.current) {
+      alert("Contrato no disponible. No se ha podido conectar a la blockchain.");
+      return;
+    }
+    if (motivoBaja == "0") {
+      alert("El campo motivo de baja es obligatorio");
+      return false;
+    }
+
+    try{
+
+      /*
+        uint256 _idPrueba,
+        uint256 _timestampBaja, 
+        uint16 _motivoDeBaja
+
+      */
+      const tx = await contract.current.baja(
+        idPrueba,
+        hoy(),
+        motivoBaja
+      );
+      await tx.wait();
+      alert("Prueba dada de baja correctamente: " + CIPBusqueda + " " + MotivoBaja);
+      //Reseteamos los datos del formulario
+      resetBajaData();
+      // Acualizamos la lista de pruebas del paciente
+      await buscarPruebasPorPaciente();
+      // Cerramos el modal de la prueba seleccionada.
+      setPruebaSeleccionada(null);
+    } catch (error) {
+      const decodedError = decodeError(error);
+      alert("Error dar de baja:" + decodedError.error);
+    }
 
   };
 
-  const darDeBaja = async () => {
-
+  /* Funcion para resetear los datos de la baja */
+  const resetBajaData = () => {
+    setMotivoBaja("0");
   };
-
+  
   /* useEffect para configurar la blockchain y listar los centros ********************************
   */
   useEffect(() => {
@@ -603,7 +663,7 @@ export default function Pacientes() {
                         ))
                       }
                     </select>
-                    <button className="boton" onClick={darDeBaja()}>Dar de baja</button>
+                    <button className="boton" onClick={() => {darDeBaja(pruebaSeleccionada.idPrueba)}}>Dar de baja</button>
                     </p>
                   </div>
                   <div>
@@ -616,7 +676,7 @@ export default function Pacientes() {
                         ))
                       }
                     </select>
-                    <button className="boton" onClick={redireccionar()}>Redireccionar</button>
+                    <button className="boton" onClick={() => {redireccionar(pruebaSeleccionada.idPrueba)}}>Redireccionar</button>
                     </p>
                   </div>
                 </div>
@@ -656,7 +716,7 @@ export default function Pacientes() {
                             <strong>{tituloEvento(evento.tipo)}</strong>
                             <span>
                               {evento.timestamp
-                                ? literalFecha(evento.timestamp)
+                                ?  literalFecha(evento.timestamp)
                                 : "—"}
                             </span>
                           </div>
