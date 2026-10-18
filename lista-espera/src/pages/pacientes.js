@@ -16,6 +16,7 @@ import { decodeBlockchainError } from "../utils/blockchainError";
 
 export default function Pacientes() {
 
+//  const contractAddress = "0x9Ed20A9432F1b4E80AAD77C2e0cd64DE7007293e";
   const contractAddress = "0x9Ed20A9432F1b4E80AAD77C2e0cd64DE7007293e";
 
 
@@ -45,6 +46,8 @@ export default function Pacientes() {
   const [historial, setHistorial] = useState([]);
   // Estado para indicar si se está cargando el historial
   const [cargandoHistorial, setCargandoHistorial] = useState(false);
+  // Porcentaje de bloques leídos al consultar el histórico (0–100)
+  const [progresoHistorial, setProgresoHistorial] = useState(0);
 
   // Flag: true solo tras una búsqueda correcta (si es false, no mostramos resultados ni el mensaje vacío)
   const [busquedaValida, setBusquedaValida] = useState(false);
@@ -249,12 +252,14 @@ export default function Pacientes() {
     setPruebaHistorial(null);
     setHistorial([]);
     setCargandoHistorial(false);
+    setProgresoHistorial(0);
   };
 
   // Consulta los logs de la blockchain de una prueba y los formatea para el modal
   const consultarHistorialPrueba = async (prueba) => {
     // URL de consula manual: https://testnet.bscscan.com
     setCargandoHistorial(true);
+    setProgresoHistorial(0);
     setHistorial([]);
     try {
       if (!contractRead.current) {
@@ -287,7 +292,10 @@ export default function Pacientes() {
         toBlock - Math.ceil(segundosDesdeAlta / BLOCK_TIME_SEG) - MARGEN_BLOQUES
       );
 */
+      // 137548856
+
       const fromBlock = 137149190;
+      //const fromBlock = 137548855;
       console.log("Histórico bloques:", { fromBlock, toBlock, idPrueba });
 
       // Todos los eventos tienen pruebaID como 1.er indexed → basta filtrar por ese topic.
@@ -298,6 +306,7 @@ export default function Pacientes() {
         32
       );
 
+      const totalBloques = Math.max(1, toBlock - fromBlock + 1);
       const todos = [];
       let primeraQuery = true;
       for (let desde = fromBlock; desde <= toBlock; desde += TAMANO_SEGMENTO) {
@@ -333,6 +342,11 @@ export default function Pacientes() {
           hasta
         );
         todos.push(...evs);
+
+        const bloquesLeidos = hasta - fromBlock + 1;
+        setProgresoHistorial(
+          Math.min(100, Math.round((bloquesLeidos / totalBloques) * 100))
+        );
       }
 
       // Más antiguo → más reciente (blockNumber, y logIndex como desempate)
@@ -367,7 +381,9 @@ export default function Pacientes() {
               `Centro realizador: ${nombreCentro(args[2])}`,
             ].join(" · ");
           } else if (tipo === "Baja") {
-            detalle = `Motivo: ${literalMotivosBaja(Number(args.motivo))}`;
+            console.log("Baja: " + args + "args[1]: " + args[1]);
+            detalle = [
+              `Motivo: ${literalMotivosBaja(args[3])}`].join(" · ");
           } else if (
             tipo === "CreaRedireccion" ||
             tipo === "AceptaRedireccion" ||
@@ -446,7 +462,7 @@ export default function Pacientes() {
         motivoBaja
       );
       await tx.wait();
-      alert("Prueba dada de baja correctamente: " + CIPBusqueda + " " + MotivoBaja);
+      alert("Prueba dada de baja correctamente: " + CIPBusqueda + " " + motivoBaja);
       //Reseteamos los datos del formulario
       resetBajaData();
       // Acualizamos la lista de pruebas del paciente
@@ -454,8 +470,7 @@ export default function Pacientes() {
       // Cerramos el modal de la prueba seleccionada.
       setPruebaSeleccionada(null);
     } catch (error) {
-      const decodedError = decodeError(error);
-      alert("Error dar de baja:" + decodedError.error);
+      alert(decodeBlockchainError("Error al dar de baja a la prueba ", error));
     }
 
   };
@@ -584,7 +599,9 @@ export default function Pacientes() {
                                 : "—"}
                             </td>
                             <td className="celda-acciones">
-                              <button type="button" className="boton" onClick={() => { setPruebaSeleccionada(prueba); }}>Gestionar</button>
+                              { prueba.activa&& (
+                                <button type="button" className="boton" onClick={() => { setPruebaSeleccionada(prueba); }}>Gestionar</button>
+                              )}
                               <button
                                 type="button"
                                 className="boton"
@@ -702,7 +719,9 @@ export default function Pacientes() {
                     {pruebaHistorial.idPrueba}
                   </p>
                   {cargandoHistorial ? (
-                    <p>Cargando eventos de la blockchain…</p>
+                    <p>
+                      Leyendo bloques de la blockchain… {progresoHistorial}%
+                    </p>
                   ) : historial.length === 0 ? (
                     <p>No hay eventos registrados para esta prueba.</p>
                   ) : (
