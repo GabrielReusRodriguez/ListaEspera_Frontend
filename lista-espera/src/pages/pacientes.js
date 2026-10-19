@@ -391,7 +391,8 @@ export default function Pacientes() {
             tipo === "AceptaRedireccion" ||
             tipo === "RechazaRedireccion"
           ) {
-            detalle = `Centro destino: ${nombreCentro(args.centroDestino)}`;
+            console.log("CreaRedireccion: " + args );
+            detalle = `Centro destino: ${nombreCentro(args[2])}`;
           }
 
           return {
@@ -432,13 +433,35 @@ export default function Pacientes() {
     }
   };
 
-  const redireccionar = async () => {
+  /* FUNCION PARA REDIRECCIONAR UNA PRUEBA ****************************************************************
+  */
+  const redireccionar = async (idPrueba) => {
     if (!contract.current) {
       alert("Contrato no disponible. No se ha podido conectar a la blockchain.");
       return;
     }
+    if (centroDestino == "0") {
+      alert("El campo centro destino es obligatorio");
+      return;
+    }
+    try{
+      const tx = await contract.current.creaRedireccion(
+        idPrueba,
+        centroDestino
+      );
+      await tx.wait();
+      alert("Prueba redirecionada correctamente");
+    } catch (error) {
+      alert(decodeBlockchainError("Error al redirecionar la prueba", error));
+    }
+    finally {
+      setCentroDestino("0");
+    }
   };
 
+
+  /* FUNCION PARA DAR DE BAJA UNA PRUEBA ****************************************************************
+  */
   const darDeBaja = async (idPrueba) => {
     if (!contract.current) {
       alert("Contrato no disponible. No se ha podido conectar a la blockchain.");
@@ -667,7 +690,7 @@ export default function Pacientes() {
                     //Bloque de la redireccion
                     pruebaSeleccionada.propuestaRedireccion && (
                       <>
-                        <p>Propuesta de redireccion al centro: {nombreCentro(pruebaSeleccionada.propuestaRedireccion)}</p>
+                        <p>Propuesta de redireccion al centro: {nombreCentro(pruebaSeleccionada.centroDestinoRedireccion)}</p>
                       </>
                     )
                   }
@@ -693,6 +716,7 @@ export default function Pacientes() {
                         centros.filter((centro) => centro.activo).map((centro) => (
                           <option value={centro.direccion} key={centro.direccion}>{centro.nombre}</option>
                         ))
+                        
                       }
                     </select>
                     <button className="boton" onClick={() => {redireccionar(pruebaSeleccionada.idPrueba)}}>Redireccionar</button>
