@@ -7,7 +7,7 @@ import  ListaEsperaManifest from "../contracts/ListaEspera.json";
 
 export default function Centros() {
 
-  const contractAddress = "0x9Ed20A9432F1b4E80AAD77C2e0cd64DE7007293e";
+  const contractAddress = "0xEe0331C3645b4140ce8720031c5c15423e042304";
 
   const contract = useRef(null);
   const [NombreCentro, setNombreCentro] = useState("");
