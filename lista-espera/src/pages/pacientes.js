@@ -52,6 +52,9 @@ export default function Pacientes() {
   // Flag: true solo tras una búsqueda correcta (si es false, no mostramos resultados ni el mensaje vacío)
   const [busquedaValida, setBusquedaValida] = useState(false);
 
+  // Address de la cartera MetaMask conectada
+  const [cuentaConectada, setCuentaConectada] = useState("");
+
   /* FUNCIONES AUXILIARES ****************************************************************
   */
   //Funcion para mapear la struct de Solidity a un objeto JS plano para React
@@ -77,6 +80,14 @@ export default function Pacientes() {
       (c) => c.direccion.toLowerCase() === address.toLowerCase()
     );
     return centro ? centro.nombre : address;
+  };
+
+  // Comprueba si la wallet conectada es el centro realizador de la prueba
+  const esCentroRealizador = (prueba) => {
+    if (!cuentaConectada || !prueba?.centroRealizador) return false;
+    return (
+      cuentaConectada.toLowerCase() === prueba.centroRealizador.toLowerCase()
+    );
   };
 
   // Funcion para listar los centros de salud
@@ -215,6 +226,20 @@ export default function Pacientes() {
         console.log("Ethereum provider detected:", provider);
         let providerEthers = new ethers.providers.Web3Provider(provider);
         let signer = providerEthers.getSigner();
+
+        const address = await signer.getAddress();
+        setCuentaConectada(address);
+        console.log("Cuenta conectada:", address);
+
+        /* Actualizar address si el usuario cambia de cuenta en MetaMask
+          Usamos un listener (on) para que cuando el usuario cambie de cuenta en MetaMask, se actualice la address de la cuenta conectada.
+        */
+        provider.removeAllListeners?.("accountsChanged");
+        provider.on("accountsChanged", (accounts) => {
+          setCuentaConectada(accounts[0] || "");
+          console.log("Cuenta cambiada:", accounts[0]);
+        });
+
         // Hay que poner la address del contrato
         contract.current = new Contract(
           contractAddress,
@@ -680,33 +705,40 @@ export default function Pacientes() {
                     )
                   }
                   <br/>
-                  <div>
-                    <h3>Dar de baja</h3>
-                    <p>Motivo de baja: <select id="motivoBaja" value={motivoBaja} onChange={(e) => setMotivoBaja(e.target.value)}>
-                      <option value="0">Selecciona un motivo de baja</option>
-                      {
-                        opcionesMotivosBaja().map((motivo) => (
-                          <option value={motivo.value} key={motivo.value}>{motivo.label}</option>
-                        ))
-                      }
-                    </select>
-                    <button className="boton" onClick={() => {darDeBaja(pruebaSeleccionada.idPrueba)}}>Dar de baja</button>
-                    </p>
-                  </div>
-                  <div>
-                    <h3>Redireccionar</h3>
-                    <p>Centro destino: <select id="centroDestino" value={centroDestino} onChange={(e) => setCentroDestino(e.target.value)}>
-                      <option value="0">Selecciona un centro destino</option>
-                      {
-                        centros.filter((centro) => centro.activo).map((centro) => (
-                          <option value={centro.direccion} key={centro.direccion}>{centro.nombre}</option>
-                        ))
-                        
-                      }
-                    </select>
-                    <button className="boton" onClick={() => {redireccionar(pruebaSeleccionada.idPrueba)}}>Redireccionar</button>
-                    </p>
-                  </div>
+                  {
+                  // Solo mostramos las opciones en caso que seas el centro realizador.
+                  esCentroRealizador(pruebaSeleccionada) ? (
+                    <>
+                      <div>
+                        <h3>Dar de baja</h3>
+                        <p>Motivo de baja: <select id="motivoBaja" value={motivoBaja} onChange={(e) => setMotivoBaja(e.target.value)}>
+                          <option value="0">Selecciona un motivo de baja</option>
+                          {
+                            opcionesMotivosBaja().map((motivo) => (
+                              <option value={motivo.value} key={motivo.value}>{motivo.label}</option>
+                            ))
+                          }
+                        </select>
+                        <button className="boton" onClick={() => {darDeBaja(pruebaSeleccionada.idPrueba)}}>Dar de baja</button>
+                        </p>
+                      </div>
+                      <div>
+                        <h3>Redireccionar</h3>
+                        <p>Centro destino: <select id="centroDestino" value={centroDestino} onChange={(e) => setCentroDestino(e.target.value)}>
+                          <option value="0">Selecciona un centro destino</option>
+                          {
+                            centros.filter((centro) => centro.activo).map((centro) => (
+                              <option value={centro.direccion} key={centro.direccion}>{centro.nombre}</option>
+                            ))
+                          }
+                        </select>
+                        <button className="boton" onClick={() => {redireccionar(pruebaSeleccionada.idPrueba)}}>Redireccionar</button>
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <p>Solo el centro realizador puede gestionar esta prueba.</p>
+                  )}
                 </div>
               </div>
             )}
