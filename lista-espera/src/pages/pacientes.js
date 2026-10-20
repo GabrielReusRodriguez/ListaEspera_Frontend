@@ -159,10 +159,6 @@ export default function Pacientes() {
       alert("El campo prioridad es obligatorio");
       return false;
     }
-    if (Alta_CentroRealizador == "0") {
-      alert("El campo centro realizador es obligatorio");
-      return false;
-    }
     return true;
   };
 
@@ -560,17 +556,6 @@ export default function Pacientes() {
                           <option value={prioridad.value} key={prioridad.value}>{prioridad.label}</option>
                         ))
                       }
-                    </select>
-                </div>
-                <div className="campo-formulario">
-                  <label htmlFor="altaCentroRealizador">centro realizador:</label>
-                  <select id="altaCentroRealizador" value={Alta_CentroRealizador} onChange={(e) => setAlta_CentroRealizador(e.target.value)}>
-                        <option value="0">Selecciona un centro realizador</option>
-                        {
-                          //Filtramos los centros y dejamos SOLO los que constan como activos.
-                          centros.filter((centro) => centro.activo).map((centro) => (
-                          <option value={centro.direccion} key={centro.direccion}>{centro.nombre}</option>
-                        ))}
                     </select>
                 </div>
                 <button className="boton" onClick={() => {altarPrueba();}}>Dar de Alta paciente</button>
