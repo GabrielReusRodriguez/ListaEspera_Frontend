@@ -96,12 +96,15 @@ export default function Redirecciones() {
       const tx = await contract.current.aceptaRedireccion(idPrueba);
       await tx.wait();
       alert("Redirección aceptada correctamente");
+      // Hacemos un refresh de las redirecciones pendientes.
       await getRedirecciones();
     } catch (error) {
       alert(decodeBlockchainError("Error al aceptar la redirección", error));
     }
   };
 
+  /* Rechazar una redirección
+  */
   const rechazar = async (idPrueba) => {
     if (!contract.current) {
       alert("Contrato no disponible. No se ha podido conectar a la blockchain.");
@@ -111,6 +114,7 @@ export default function Redirecciones() {
       const tx = await contract.current.rechazaRedireccion(idPrueba);
       await tx.wait();
       alert("Redirección rechazada correctamente");
+      // Hacemos un refresh de las redirecciones pendientes.
       await getRedirecciones();
     } catch (error) {
       alert(decodeBlockchainError("Error al rechazar la redirección", error));
