@@ -295,27 +295,16 @@ export default function Pacientes() {
       // El RPC (BSC/MetaMask) no permite barrer ~137M bloques desde 0.
       // Acotamos desde un poco antes del timestamp de alta de la prueba.
       const TAMANO_SEGMENTO = 3000;
-      const BLOCK_TIME_SEG = 3; // BSC ~3s/bloque
-      const MARGEN_BLOQUES = 20000;
       // Espera entre cada queryFilter (ms) para no saturar el RPC
       const DELAY_ENTRE_QUERIES_MS = 1000;
       const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
       const toBlock = await provider.getBlockNumber();
-      const latestBlock = await provider.getBlock(toBlock);
-      const segundosDesdeAlta = Math.max(
-        0,
-        latestBlock.timestamp - (prueba.timestampAlta || 0)
-      );
-     /*
-      const fromBlock = Math.max(
-        0,
-        toBlock - Math.ceil(segundosDesdeAlta / BLOCK_TIME_SEG) - MARGEN_BLOQUES
-      );
-*/
       // 137548856
-
-      const fromBlock = 137149190;
+      /*
+        Truco para acelerar, partimos del bloque 137760932 que es el bloque que consta en https://testnet.bscsc donde se registro el deploy del contrato.
+      */
+      const fromBlock = 137760932;
       //const fromBlock = 137548855;
       console.log("Histórico bloques:", { fromBlock, toBlock, idPrueba });
 
