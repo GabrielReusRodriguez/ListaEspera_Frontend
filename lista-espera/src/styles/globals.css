@@ -40,3 +40,244 @@ a {
     color-scheme: dark;
   }
 }
+
+/*
+
+Estilos incluidos por Gabriel, fuera del estandard de Next.js
+
+*/
+/*
+.nav-link {
+  display: inline-block;
+  margin: 0.5rem 0;
+  padding: 0.6rem 1rem;
+  color: #fff;
+  background: #2563eb;
+  border-radius: 6px;
+  text-decoration: none;
+}
+.nav-link:hover {
+  background: #1d4ed8;
+}
+*/
+/*
+.nav-link {
+  color: #0000ee;
+  text-decoration: underline;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+.nav-link:visited {
+  color: #551a8b;
+}
+.nav-link:hover {
+  color: #0000ee;
+  background: none;
+}
+*/
+
+/* Estilos para los enlaces de la navegación */
+.nav-link {
+  display: inline-block;
+  margin: 0.4rem 0;
+  color: #7dd3fc;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.nav-link:visited {
+  color: #c4b5fd;
+}
+.nav-link:hover {
+  color: #bae6fd;
+  border-bottom-color: #bae6fd;
+  background: none;
+}
+
+/* Aviso / disclaimer en la portada */
+.disclaimer {
+  max-width: 52rem;
+  margin: 1.25rem auto 1.75rem;
+  padding: 1rem 1.25rem;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid #fb7185;
+  border-left-width: 4px;
+  border-radius: 8px;
+  color: #fecdd3;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.disclaimer strong {
+  color: #fda4af;
+  font-weight: 700;
+}
+
+/* Estilos para el titulo de la pagina*/
+.titulo {
+  text-align: center;
+}
+
+/* Estilos para los botones */
+.boton {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 6px 14px;      /* más pequeño */
+  border-radius: 8px;     /* más redondeado */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;        /* un poco más pequeño */
+  margin: 4px 2px;
+  margin-left: 12px;
+  cursor: pointer;
+}
+
+/* Tabla de centros */
+.tabla-centros {
+  width: 100%;
+  max-width: 900px;
+  margin: 1rem 0;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabla-centros th,
+.tabla-centros td {
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+.tabla-centros th {
+  border-bottom: 2px solid #4CAF50;
+  font-weight: 600;
+}
+
+.tabla-centros tbody tr:hover {
+  background: rgba(76, 175, 80, 0.08);
+}
+
+.tabla-centros .celda-address {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+/* Acciones (Gestionar / Historico) en la misma línea */
+.tabla-centros td.celda-acciones {
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.tabla-centros td.celda-acciones .boton {
+  display: inline-block;
+  margin: 0 4px 0 0;
+  vertical-align: middle;
+}
+
+/* Formulario: etiquetas y controles alineados */
+.formulario-campos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 520px;
+}
+
+.campo-formulario {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.campo-formulario label {
+  text-align: right;
+}
+
+.campo-formulario input,
+.campo-formulario select {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  font-size: 14px;
+}
+
+/* Estilos para el overlay modal */
+/*
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-contenido {
+  background: white;
+  padding: 1.5rem;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow: auto;
+}
+*/
+
+/* Estilos para el overlay modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-contenido {
+  background: white;
+  color: #171717;
+  padding: 1.5rem;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.modal-historial {
+  max-width: 860px;
+  width: 92vw;
+}
+/* Hace que el boton de cerrar quede centrado a la derecha del modal*/
+.modal-cerrar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lista-historial {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.item-historial {
+  border-left: 3px solid #4CAF50;
+  padding: 0.75rem 0 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.item-historial-cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.item-historial p {
+  margin: 0.25rem 0;
+}
+
+.item-historial-meta {
+  font-size: 12px;
+  color: #666;
+}
